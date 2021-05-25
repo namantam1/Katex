@@ -113,7 +113,7 @@ public class MathView extends WebView {
         "        <script type=\"text/javascript\" src=\"file:///android_asset/katex/contrib/auto-render.min.js\" ></script>\n" +
         "        <script type=\"text/javascript\" src=\"file:///android_asset/katex/contrib/auto-render.js\" ></script>\n" +
         "        <script type=\"text/javascript\" src=\"file:///android_asset/jquery.min.js\" ></script>\n" +
-        "        <script>const str = \"{formula}\"</script>\n"+
+        "        <script>const str = String.raw`{formula}`</script>\n"+
         "        <script type=\"text/javascript\" src=\"file:///android_asset/latex_parser.js\" ></script>\n"+
         "        <meta name=\"viewport\" content=\"width=device-width\"/>\n"+
         "<link rel=\"stylesheet\" href=\"file:///android_asset/webviewstyle.css\"/>\n" +
