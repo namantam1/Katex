@@ -1,139 +1,72 @@
-// (function(){
+const latexify = (string, options, element = document.body) => {
+  const regularExpression = /\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\)|\$[^$\\]*(?:\\.[^$\\]*)*\$/g;
+  const blockRegularExpression = /\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]/g;
 
-//   window.onload = function(){
-// //  console.log('juery',$);
-//     //setTimeout(function(){
-//      var latexElement  = $('body').find('.latexEle');
-//      console.log(latexElement.length);
-//      for (var j = 0; j < latexElement.length; j++) {
-//              var latex = $(latexElement[j]).attr('data-latex');
-//              console.log(latex);
-//              var splittedLatex = splitLatex(latex);
-//              console.log('splittedLatex',splittedLatex);
-//               if (splittedLatex.length > 1) {
-//                 $(latexElement[j]).removeClass('latexEle');
-//                 $(latexElement[j]).removeAttr('data-latex');
-//                 latexElement[j].innerHTML = '';
-//                 for (var k = 0; k < splittedLatex.length; k++) {
-//                   var latexItem = splittedLatex[k];
-//                   if (latexItem) {
-//                     var temp = $('<span class="latexEle" contenteditable="false"></span>');
-//                     $(latexElement[j]).append($('<p></p>').append(temp));
-//                     temp.attr('data-latex', latexItem);
-//                     temp.text('$'+latexItem+'$');
-//                   }
-//                 }
-//               } else {
-//                 $(latexElement[j]).text('$'+splittedLatex[0]+'$');
-//               }
-//             }
-//              renderMathInElement(document.body);
-//    // },500)
+  const stripDollars = (stringToStrip) =>
+  (stringToStrip[0] === "$" && stringToStrip[1] !== "$"
+    ? stringToStrip.slice(1, -1)
+    : stringToStrip.slice(2, -2));
 
-//   }
+  const getDisplay = (stringToDisplay) =>
+    (stringToDisplay.match(blockRegularExpression) ? "block" : "inline");
 
-// })();
+  const renderLatexString = (s, t) => {
+    let renderedString;
+    try {
+      // returns HTML markup
+      renderedString = katex.renderToString(
+        s,
+        { ...options, displayMode: t === "block" }
+      );
+    } catch (err) {
+      console.error("couldn`t convert string", err, s);
+      return s;
+    }
+    return renderedString;
+  };
 
-// var splitLatex = function (latex) {
-//     // handling line breaks
-//     // katex does not support line breaks so need to split the latex into multiple formulaes based on line breaks
-//     // need to support matrix environment
-//     // line breaks are supported in environments so need to skip handling line breaks for closed environment
-//     // handling brackets if matrix is wrapped in brackets need to handle the scenario
+  const result = [];
 
-//     var matches = [];
+  const latexMatch = string.match(regularExpression);
+  const stringWithoutLatex = string.split(regularExpression);
 
-//     function globalMatch(regex) {
-//       return new RegExp(regex.source, 'g');
-//     }
+  if (latexMatch) {
+    stringWithoutLatex.forEach((s, index) => {
+      result.push({
+        string: s,
+        type: "text",
+      });
+      if (latexMatch[index]) {
+        result.push({
+          string: stripDollars(latexMatch[index]),
+          type: getDisplay(latexMatch[index]),
+        });
+      }
+    });
+  } else {
+    result.push({
+      string,
+      type: "text",
+    });
+  }
 
-//     // matches the pattern \begin{matrix}any-valid-char\end{matrix}
-//     var environmentMatch = new RegExp(/(\\begin{(\w*)}(.*?)(\\end){(\2)})/);
-//     var bracketMatch = new RegExp(/(\\left[\[\(\{\|])(.*?)(\\right[\]\}\)\|])/);
-//     var positionMatch = new RegExp(/(\$[\d]*\$)/);
-//     var match = latex.match(environmentMatch);
-//     // prevent infinite loop in remote scenario
-//     var iteration = 0;
+  const processResult = (resultToProcess) => {
+    const newResult = resultToProcess.map((r) => {
+      if (r.type === "text") {
+        return r.string;
+      }
+      return renderLatexString(r.string, r.type);
+    });
 
-//     while (match && iteration < 10) {
-//       matches.push(match[0]);
-//       latex = latex.replace(match[0], '$' + (matches.length - 1) + '$');
-//       match = latex.match(environmentMatch);
-//       iteration++;
-//     }
+    return newResult;
+  };
 
-//     iteration = 0;
-
-//     match = latex.match(bracketMatch);
-//     while (match && iteration < 10) {
-//       matches.push(match[0]);
-//       latex = latex.replace(match[0], '$' + (matches.length - 1) + '$');
-//       match = latex.match(bracketMatch);
-//       iteration++;
-//     }
-
-
-//     var splittedLatex = latex.split('\\\\');
-//     // filter empty strings
-//     splittedLatex = splittedLatex.filter(function (item) {
-//       return item.length;
-//     });
-
-//     splittedLatex = splittedLatex.map(function (item, index) {
-//       var pos = item.match(positionMatch);
-//       var iteration = 0;
-//       while (iteration < 10 && pos) {
-//         index = Number(pos[0].substring(1, pos[0].length - 1));
-//         item = item.replace(pos[0], matches[index]);
-//         pos = item.match(positionMatch);
-//         iteration++;
-//       }
-//       return item;
-//     });
-
-
-//     var tempArray = [];
-//     for (var a = 0; a < splittedLatex.length; a++) {
-//       if (splittedLatex[a].match(environmentMatch) || splittedLatex[a].match(bracketMatch)) {
-//         tempArray.push(splittedLatex[a]);
-//       } else {
-//         var temp = splittedLatex[a].split(/\\\\/).map(function (item) {
-//           return item.trim();
-//         }).filter(function (item) {
-//           return item.length;
-//         });
-//         tempArray = tempArray.concat(temp);
-//       }
-//     }
-
-//     splittedLatex = tempArray;
-
-//     // handle therefore and because symbol
-
-//     splittedLatex = splittedLatex.map(function (item) {
-//       item = item.replace(/(\\text)?(\{)?\∴(\})?(\\\:)?/g, '\\therefore ');
-//       item = item.replace(/(\\text)?(\{)?\∵(\})?(\\\:)?/g, '\\because ');
-//       return item;
-//     });
-
-//     return splittedLatex;
-//   }
+  element.innerHTML = processResult(result).join("\n")
+};
 
 (function () {
   document.addEventListener("DOMContentLoaded", function () {
-    // const str = "c = \\pm\\sqrt{a^2 + b^2}";
-    katex.render(str, document.body, {
-      // renderMathInElement(document.body, {
-      // customised options
-      // • auto-render specific keys, e.g.:
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '$', right: '$', display: false },
-        { left: '\\(', right: '\\)', display: false },
-        { left: '\\[', right: '\\]', display: true }
-      ],
-      // • rendering keys, e.g.:
-      throwOnError: false
-    });
+    latexify(str, {}, document.body)
   });
 })();
+
