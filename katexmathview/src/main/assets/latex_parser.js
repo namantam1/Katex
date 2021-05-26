@@ -1,17 +1,1 @@
-(function () {
-  document.addEventListener("DOMContentLoaded", function () {
-    document.body.innerText = str;
-    renderMathInElement(document.body, {
-      // customised options
-      // • auto-render specific keys, e.g.:
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '$', right: '$', display: false },
-        { left: '\\(', right: '\\)', display: false },
-        { left: '\\[', right: '\\]', display: true }
-      ],
-      // • rendering keys, e.g.:
-      throwOnError: false
-    });
-  });
-})();
+document.addEventListener("DOMContentLoaded",function(){document.body.innerText=str,renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],throwOnError:!1})});
