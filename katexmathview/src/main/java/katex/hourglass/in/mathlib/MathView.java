@@ -111,12 +111,9 @@ public class MathView extends WebView {
         "        <link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/themes/style.css\" >\n" +
         "        <script type=\"text/javascript\" src=\"file:///android_asset/katex/katex.min.js\" ></script>\n" +
         "        <script type=\"text/javascript\" src=\"file:///android_asset/katex/contrib/auto-render.min.js\" ></script>\n" +
-        "        <script type=\"text/javascript\" src=\"file:///android_asset/katex/contrib/auto-render.js\" ></script>\n" +
-        "        <script type=\"text/javascript\" src=\"file:///android_asset/jquery.min.js\" ></script>\n" +
         "        <script>const str = String.raw`{formula}`</script>\n"+
         "        <script type=\"text/javascript\" src=\"file:///android_asset/latex_parser.js\" ></script>\n"+
         "        <meta name=\"viewport\" content=\"width=device-width\"/>\n"+
-        "<link rel=\"stylesheet\" href=\"file:///android_asset/webviewstyle.css\"/>\n" +
         "<style type='text/css'>"+
         "body {"+
         "margin: 0px;"+
@@ -129,10 +126,6 @@ public class MathView extends WebView {
         "    <body>\n" +
         "    </body>\n" +
         "</html>";
-    String start = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='UTF-8' /><style> body {"+
-        " white-space: nowrap;}</style></head><body>";
-
-    String end = "</body></html>";
     return offline_config.replace("{formula}",this.display_text);
 
 

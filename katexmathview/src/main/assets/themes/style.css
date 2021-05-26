@@ -1,6 +1,11 @@
 body {
-    margin: 0;
-    -webkit-touch-callout: none!important;
-    -webkit-user-select: none!important;
-    user-select: none!important;
+  margin: 0;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+img {
+  max-width: 50% !important;
+  width: 50% !important;
 }
